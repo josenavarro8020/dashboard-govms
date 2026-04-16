@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Political Intelligence Dashboard</title>
+    <title>Dashboard de Inteligência Política</title>
     <!-- Inter Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Tailwind CSS -->
@@ -57,14 +57,6 @@
                     <div class="flex-shrink-0 flex items-center text-xl font-bold text-gray-900">
                         PolitiDash ⚡
                     </div>
-                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                        <button id="nav-govms" class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" onclick="switchView('govms')">
-                            Governo de MS
-                        </button>
-                        <button id="nav-candidates" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" onclick="switchView('candidates')">
-                            Candidates 2026
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -75,29 +67,29 @@
         <!-- SECTION: Governo de MS -->
         <section id="sec-govms" class="space-y-6">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900">Governo de MS Overview</h1>
-                <p class="text-sm text-gray-500">Institutional performance and search volume</p>
+                <h1 class="text-2xl font-bold text-gray-900">Visão Geral - Governo de MS</h1>
+                <p class="text-sm text-gray-500">Desempenho institucional e volume de buscas</p>
             </div>
 
             <!-- KPIs -->
             <div class="grid grid-cols-1 gap-5 sm:grid-cols-3">
                 <div class="card">
-                    <h3 class="text-sm font-medium text-gray-500">Instagram Followers</h3>
+                    <h3 class="text-sm font-medium text-gray-500">Seguidores no Instagram</h3>
                     <p class="mt-1 text-3xl font-bold text-gray-900" id="govms-insta-followers">-</p>
                 </div>
                 <div class="card">
-                    <h3 class="text-sm font-medium text-gray-500">Facebook Likes</h3>
+                    <h3 class="text-sm font-medium text-gray-500">Curtidas no Facebook</h3>
                     <p class="mt-1 text-3xl font-bold text-gray-900" id="govms-fb-likes">-</p>
                 </div>
                 <div class="card">
-                    <h3 class="text-sm font-medium text-gray-500">TikTok Followers</h3>
+                    <h3 class="text-sm font-medium text-gray-500">Seguidores no TikTok</h3>
                     <p class="mt-1 text-3xl font-bold text-gray-900" id="govms-tiktok-followers">-</p>
                 </div>
             </div>
 
             <!-- Chart -->
             <div class="card">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Google Search Interest (Time Series)</h3>
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Interesse de Busca no Google (Série Temporal)</h3>
                 <div class="relative h-72 w-full">
                     <canvas id="chart-govms-timeline"></canvas>
                 </div>
@@ -106,13 +98,13 @@
             <!-- Search Terms Tables -->
             <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div class="card">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Top Queries</h3>
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Principais Consultas</h3>
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="table-header">
                                 <tr>
-                                    <th class="px-4 py-2 text-left">Query</th>
-                                    <th class="px-4 py-2 text-right">Interest</th>
+                                    <th class="px-4 py-2 text-left">Consulta</th>
+                                    <th class="px-4 py-2 text-right">Interesse</th>
                                 </tr>
                             </thead>
                             <tbody id="govms-top-queries" class="bg-white divide-y divide-gray-200 text-sm">
@@ -122,13 +114,13 @@
                     </div>
                 </div>
                 <div class="card">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Rising Queries</h3>
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Consultas em Ascensão</h3>
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="table-header">
                                 <tr>
-                                    <th class="px-4 py-2 text-left">Query</th>
-                                    <th class="px-4 py-2 text-right">Increase</th>
+                                    <th class="px-4 py-2 text-left">Consulta</th>
+                                    <th class="px-4 py-2 text-right">Aumento</th>
                                 </tr>
                             </thead>
                             <tbody id="govms-rising-queries" class="bg-white divide-y divide-gray-200 text-sm">
@@ -141,32 +133,27 @@
         </section>
 
         <!-- SECTION: Candidates 2026 -->
-        <section id="sec-candidates" class="hidden-section space-y-6">
+        <section id="sec-candidates" class="space-y-6 pt-12">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900">Candidates 2026 Comparison</h1>
-                <p class="text-sm text-gray-500">Benchmarking performance across possible 2026 scenarios</p>
+                <h1 class="text-2xl font-bold text-gray-900">Comparativo de Candidatos 2026</h1>
+                <p class="text-sm text-gray-500">Análise de desempenho para os potenciais cenários de 2026</p>
             </div>
 
             <!-- Candidate Specific Network Cards -->
             <div class="card bg-white shadow rounded-lg p-6">
                 <div class="flex items-center justify-between mb-4 border-b pb-4">
-                    <h3 class="text-lg font-medium text-gray-900">Per-Candidate Social Media Overview</h3>
+                    <h3 class="text-lg font-medium text-gray-900">Visão Geral de Redes Sociais por Candidato</h3>
                 </div>
                 
-                <!-- Candidate Selector -->
-                <div class="flex space-x-2 overflow-x-auto mb-6" id="candidate-selector">
-                    <!-- Tabs injected via JS -->
-                </div>
-
-                <!-- 3 Network Cards Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="candidate-cards-container">
+                <!-- List of Candidates injected via JS -->
+                <div class="space-y-10" id="candidate-cards-container">
                     <!-- Cards injected via JS -->
                 </div>
             </div>
 
             <!-- Comparison Chart -->
             <div class="card">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Google Search Interest Comparison</h3>
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Comparativo de Interesse de Busca no Google</h3>
                 <div class="relative h-96 w-full">
                     <canvas id="chart-candidates-timeline"></canvas>
                 </div>
@@ -174,7 +161,7 @@
 
             <!-- Search Terms Grid (4 Columns) -->
             <div class="card">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Google Search Queries by Candidate (Top & Rising)</h3>
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Consultas de Busca por Candidato (Principais e em Ascensão)</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="candidates-search-grid">
                     <!-- Cards injected via JS -->
                 </div>
