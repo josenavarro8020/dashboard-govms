@@ -7,7 +7,7 @@ const colors = {
     'Governo MS': '#1E293B', // Slate
 };
 
-const candidateKeys = ['Eduardo Riedel', 'Marcos Pollon', 'Fabio Trad', 'João Henrique Catan'];
+const candidateKeys = ['Governo MS', 'Eduardo Riedel', 'Marcos Pollon', 'Fabio Trad', 'João Henrique Catan'];
 
 const filePaths = {
     'Governo MS': {
@@ -37,7 +37,6 @@ const filePaths = {
     }
 };
 
-let chartGovMS = null;
 let chartCandidates = null;
 let globalData = {};
 
@@ -96,7 +95,7 @@ function parseCSV(csvText) {
     }
     return data;
 }
-// Utility: Group time series by month and average
+// Utility: Group time series by month and sum all values
 function aggregateMonthly(data, timeKey, valKey) {
     if(!data || data.length === 0) return [];
 
@@ -141,6 +140,10 @@ function renderCandidateCards() {
     if(!container) return;
 
     container.innerHTML = candidateKeys.map(cand => {
+        const isGov = cand === 'Governo MS';
+        const titleBadge = isGov ? '<span class="ml-3 px-2 py-1 text-xs font-semibold bg-indigo-100 text-indigo-800 border border-indigo-200 rounded-full tracking-wide">DESTAQUE INSTITUCIONAL</span>' : '';
+        const cardClass = isGov ? 'border-2 border-indigo-200 shadow-xl bg-indigo-50/10 p-4 sm:p-6 -mx-4 sm:-mx-6 rounded-2xl mb-12 relative' : 'mb-8';
+
         const profile = globalData.socialMedia.find(p => p.nome === cand) || {redes_sociais: {instagram:{}, facebook:{}, tiktok:{}}};
         const rs = profile.redes_sociais;
         const insta = rs.instagram || {};
@@ -148,10 +151,10 @@ function renderCandidateCards() {
         const tk = rs.tiktok || {};
 
         return `
-        <div class="mb-8">
+        <div class="${cardClass}">
             <h4 class="text-xl font-bold mb-4 flex items-center" style="color: ${colors[cand]}">
                 <span class="inline-block w-4 h-4 rounded-full mr-2" style="background-color: ${colors[cand]}"></span>
-                ${cand}
+                ${cand} ${titleBadge}
             </h4>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Instagram Card -->
@@ -264,7 +267,6 @@ async function loadAllData() {
             } catch (e) { console.error('Error fetching Rising for ' + entity, e); }
         }
         
-        renderGovernoMS();
         renderCandidates();
         
     } catch(err) {
@@ -273,71 +275,6 @@ async function loadAllData() {
     }
 }
 
-// Rendering Governing MS
-function renderGovernoMS() {
-    const entity = 'Governo MS';
-    const profile = globalData.socialMedia.find(p => p.nome === entity);
-    
-    if (profile) {
-        document.getElementById('govms-insta-followers').textContent = formatNum(profile.redes_sociais.instagram.seguidores);
-        document.getElementById('govms-fb-likes').textContent = formatNum(profile.redes_sociais.facebook.curtidas);
-        document.getElementById('govms-tiktok-followers').textContent = formatNum(profile.redes_sociais.tiktok.seguidores);
-    }
-
-    const trends = globalData.trends[entity];
-    
-    // Top Queries
-    const tbodyTop = document.getElementById('govms-top-queries');
-    tbodyTop.innerHTML = trends.topQueries.slice(0, 10).map(t => 
-        `<tr><td class="px-4 py-3 whitespace-nowrap capitalize">${t.query || t.Query || ''}</td>
-             <td class="px-4 py-3 whitespace-nowrap text-right text-gray-500">${t['search interest'] || t['Search Interest'] || ''}</td></tr>`
-    ).join('');
-
-    // Rising Queries
-    const tbodyRising = document.getElementById('govms-rising-queries');
-    tbodyRising.innerHTML = trends.risingQueries.slice(0, 10).map(t => 
-        `<tr><td class="px-4 py-3 whitespace-nowrap capitalize">${t.query || t.Query || ''}</td>
-             <td class="px-4 py-3 whitespace-nowrap text-right text-green-600 font-medium">${t['increase percent'] || t['Increase'] || ''}</td></tr>`
-    ).join('');
-
-    // Time Series Line Chart
-    const ctx = document.getElementById('chart-govms-timeline').getContext('2d');
-    let tsData = trends.timeSeries;
-    const timeKey = Object.keys(tsData[0] || {}).find(k => k.toLowerCase() === 'time');
-    const valKey = Object.keys(tsData[0] || {}).find(k => k.toLowerCase() !== 'time');
-
-    tsData = aggregateMonthly(tsData, timeKey, valKey);
-
-    const labels = tsData.map(d => d[timeKey]);
-    const values = tsData.map(d => Number(d[valKey]));
-
-    if (chartGovMS) chartGovMS.destroy();
-    chartGovMS = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Interesse de Busca',
-                data: values,
-                borderColor: colors[entity],
-                backgroundColor: colors[entity] + '20', // Hex + alpha
-                borderWidth: 2,
-                fill: true,
-                tension: 0.3,
-                pointRadius: 0
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true },
-                x: { grid: { display: false } }
-            }
-        }
-    });
-}
 
 // Rendering Candidates
 function renderCandidates() {
