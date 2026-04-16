@@ -147,23 +147,20 @@
                 <p class="text-sm text-gray-500">Benchmarking performance across possible 2026 scenarios</p>
             </div>
 
-            <!-- Instagram Table -->
-            <div class="card">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Instagram Performance</h3>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
-                        <thead class="table-header">
-                            <tr>
-                                <th class="px-6 py-3 text-left tracking-wider">Candidate</th>
-                                <th class="px-6 py-3 text-right tracking-wider">Followers</th>
-                                <th class="px-6 py-3 text-right tracking-wider">Engagement (%)</th>
-                                <th class="px-6 py-3 text-right tracking-wider">Avg. Likes</th>
-                            </tr>
-                        </thead>
-                        <tbody id="candidates-insta-table" class="bg-white divide-y divide-gray-200 text-sm text-gray-900">
-                            <!-- Data injected via JS -->
-                        </tbody>
-                    </table>
+            <!-- Candidate Specific Network Cards -->
+            <div class="card bg-white shadow rounded-lg p-6">
+                <div class="flex items-center justify-between mb-4 border-b pb-4">
+                    <h3 class="text-lg font-medium text-gray-900">Per-Candidate Social Media Overview</h3>
+                </div>
+                
+                <!-- Candidate Selector -->
+                <div class="flex space-x-2 overflow-x-auto mb-6" id="candidate-selector">
+                    <!-- Tabs injected via JS -->
+                </div>
+
+                <!-- 3 Network Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="candidate-cards-container">
+                    <!-- Cards injected via JS -->
                 </div>
             </div>
 
