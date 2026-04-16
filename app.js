@@ -41,29 +41,7 @@ let chartGovMS = null;
 let chartCandidates = null;
 let globalData = {};
 
-// Navigation
-function switchView(view) {
-    const secGovms = document.getElementById('sec-govms');
-    const secCandidates = document.getElementById('sec-candidates');
-    const navGovms = document.getElementById('nav-govms');
-    const navCandidates = document.getElementById('nav-candidates');
-
-    if (view === 'govms') {
-        secGovms.classList.remove('hidden-section');
-        secCandidates.classList.add('hidden-section');
-        navGovms.classList.add('border-indigo-500', 'text-gray-900');
-        navGovms.classList.remove('border-transparent', 'text-gray-500');
-        navCandidates.classList.add('border-transparent', 'text-gray-500');
-        navCandidates.classList.remove('border-indigo-500', 'text-gray-900');
-    } else {
-        secGovms.classList.add('hidden-section');
-        secCandidates.classList.remove('hidden-section');
-        navCandidates.classList.add('border-indigo-500', 'text-gray-900');
-        navCandidates.classList.remove('border-transparent', 'text-gray-500');
-        navGovms.classList.add('border-transparent', 'text-gray-500');
-        navGovms.classList.remove('border-indigo-500', 'text-gray-900');
-    }
-}
+// Navigation removed for single-page layout
 
 // Formatters
 const formatNum = (num) => new Intl.NumberFormat('pt-BR').format(num);
@@ -134,7 +112,7 @@ function aggregateMonthly(data, timeKey, valKey) {
         if (isNaN(dateObj.getTime())) return;
         
         const year = dateObj.getFullYear();
-        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const monthNames = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
         const monthName = monthNames[dateObj.getMonth()];
         const monthKey = `${monthName} ${year}`;
         const numericKey = `${year}-${String(dateObj.getMonth() + 1).padStart(2, '0')}`; // For sorting
@@ -153,120 +131,103 @@ function aggregateMonthly(data, timeKey, valKey) {
 
     return Object.keys(monthMap).sort().map(nk => {
         const item = monthMap[nk];
-        const avg = item.count > 0 ? (item.sum / item.count).toFixed(2) : 0;
-        return { [timeKey]: item.label, [valKey]: avg };
+        const sum = item.sum.toFixed(2);
+        return { [timeKey]: item.label, [valKey]: sum };
     });
 }
 
-let selectedCandidate = candidateKeys[0]; // default
-
-window.selectCandidate = function(cand) {
-    selectedCandidate = cand;
-    renderCandidateSelector();
-    renderCandidateCards();
-};
-
-function renderCandidateSelector() {
-    const selectorEl = document.getElementById('candidate-selector');
-    if(!selectorEl) return;
-    selectorEl.innerHTML = candidateKeys.map(cand => {
-        const isActive = cand === selectedCandidate;
-        const color = colors[cand];
-        const activeStyles = isActive 
-            ? `background-color: ${color}; color: white; border-color: ${color};` 
-            : `background-color: #f9fafb; color: #4b5563; border-color: #e5e7eb;`;
-
-        return `
-            <button onclick="selectCandidate('${cand}')" class="px-4 py-2 text-sm font-medium border rounded-full transition-colors duration-200 hover:opacity-80 focus:outline-none" style="${activeStyles}">
-                ${cand}
-            </button>
-        `;
-    }).join('');
-}
-
 function renderCandidateCards() {
-    const profile = globalData.socialMedia.find(p => p.nome === selectedCandidate) || {redes_sociais: {instagram:{}, facebook:{}, tiktok:{}}};
-    const rs = profile.redes_sociais;
     const container = document.getElementById('candidate-cards-container');
     if(!container) return;
 
-    const insta = rs.instagram || {};
-    const fb = rs.facebook || {};
-    const tk = rs.tiktok || {};
+    container.innerHTML = candidateKeys.map(cand => {
+        const profile = globalData.socialMedia.find(p => p.nome === cand) || {redes_sociais: {instagram:{}, facebook:{}, tiktok:{}}};
+        const rs = profile.redes_sociais;
+        const insta = rs.instagram || {};
+        const fb = rs.facebook || {};
+        const tk = rs.tiktok || {};
 
-    container.innerHTML = `
-        <!-- Instagram Card -->
-        <div class="card border-t-4" style="border-top-color: #E1306C; background: linear-gradient(to bottom, #fff0f5 0%, #ffffff 100%);">
-            <div class="flex items-center mb-4">
-                <span class="p-2 rounded-md font-bold text-white text-xs mr-3 shadow" style="background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);">IG</span>
-                <h4 class="text-lg font-bold text-gray-900">Instagram</h4>
-            </div>
-            <div class="space-y-4">
-                <div>
-                    <p class="text-sm font-medium text-gray-500">Followers</p>
-                    <p class="text-2xl font-bold text-gray-900">${formatNum(insta.seguidores || 0)}</p>
+        return `
+        <div class="mb-8">
+            <h4 class="text-xl font-bold mb-4 flex items-center" style="color: ${colors[cand]}">
+                <span class="inline-block w-4 h-4 rounded-full mr-2" style="background-color: ${colors[cand]}"></span>
+                ${cand}
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Instagram Card -->
+                <div class="card border-t-4" style="border-top-color: #E1306C; background: linear-gradient(to bottom, #fff0f5 0%, #ffffff 100%);">
+                    <div class="flex items-center mb-4">
+                        <span class="p-2 rounded-md font-bold text-white text-xs mr-3 shadow" style="background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);">IG</span>
+                        <h4 class="text-lg font-bold text-gray-900">Instagram</h4>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Seguidores</p>
+                            <p class="text-2xl font-bold text-gray-900">${formatNum(insta.seguidores || 0)}</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+                            <div>
+                                <p class="text-xs text-gray-500">Engajamento</p>
+                                <p class="font-semibold text-gray-800">${insta.taxa_engajamento_pct || 0}%</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500">Média de Curtidas</p>
+                                <p class="font-semibold text-gray-800">${formatNum(insta.media_curtidas || 0)}</p>
+                            </div>
+                            <div class="col-span-2">
+                                <p class="text-xs text-gray-500">Média de Comentários</p>
+                                <p class="font-semibold text-gray-800">${formatNum(insta.media_comentarios || 0)}</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
-                    <div>
-                        <p class="text-xs text-gray-500">Engagement</p>
-                        <p class="font-semibold text-gray-800">${insta.taxa_engajamento_pct || 0}%</p>
-                    </div>
-                    <div>
-                        <p class="text-xs text-gray-500">Avg Likes</p>
-                        <p class="font-semibold text-gray-800">${formatNum(insta.media_curtidas || 0)}</p>
-                    </div>
-                    <div class="col-span-2">
-                        <p class="text-xs text-gray-500">Avg Comments</p>
-                        <p class="font-semibold text-gray-800">${formatNum(insta.media_comentarios || 0)}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Facebook Card -->
-        <div class="card border-t-4" style="border-top-color: #1877F2; background: linear-gradient(to bottom, #eff6ff 0%, #ffffff 100%);">
-            <div class="flex items-center mb-4">
-                <span class="p-2 rounded-md font-bold text-white text-xs mr-3 shadow" style="background:#1877F2;">FB</span>
-                <h4 class="text-lg font-bold text-gray-900">Facebook</h4>
-            </div>
-            <div class="space-y-4">
-                <div>
-                    <p class="text-sm font-medium text-gray-500">Page Likes</p>
-                    <p class="text-2xl font-bold text-gray-900">${formatNum(fb.curtidas || 0)}</p>
+                <!-- Facebook Card -->
+                <div class="card border-t-4" style="border-top-color: #1877F2; background: linear-gradient(to bottom, #eff6ff 0%, #ffffff 100%);">
+                    <div class="flex items-center mb-4">
+                        <span class="p-2 rounded-md font-bold text-white text-xs mr-3 shadow" style="background:#1877F2;">FB</span>
+                        <h4 class="text-lg font-bold text-gray-900">Facebook</h4>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Curtidas na Página</p>
+                            <p class="text-2xl font-bold text-gray-900">${formatNum(fb.curtidas || 0)}</p>
+                        </div>
+                        <div class="pt-4 border-t border-gray-100">
+                            <p class="text-xs text-gray-500">Falando Sobre</p>
+                            <p class="font-semibold text-gray-800">${formatNum(fb.pessoas_falando || 0)}</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="pt-4 border-t border-gray-100">
-                    <p class="text-xs text-gray-500">Talking About</p>
-                    <p class="font-semibold text-gray-800">${formatNum(fb.pessoas_falando || 0)}</p>
-                </div>
-            </div>
-        </div>
 
-        <!-- TikTok Card -->
-        <div class="card border-t-4" style="border-top-color: #000000; background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);">
-            <div class="flex items-center mb-4">
-                <span class="p-2 rounded-md font-bold text-white text-xs mr-3 shadow flex items-center justify-center" style="background: linear-gradient(135deg, #00f2fe 0%, #000000 50%, #fe0979 100%); min-width: 32px">
-                   <span class="bg-transparent tracking-widest text-white">TK</span>
-                </span>
-                <h4 class="text-lg font-bold text-gray-900">TikTok</h4>
-            </div>
-            <div class="space-y-4">
-                <div>
-                    <p class="text-sm font-medium text-gray-500">Followers</p>
-                    <p class="text-2xl font-bold text-gray-900">${formatNum(tk.seguidores || 0)}</p>
-                </div>
-                <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
-                    <div>
-                        <p class="text-xs text-gray-500">Total Likes</p>
-                        <p class="font-semibold text-gray-800">${formatNum(tk.curtidas_totais || 0)}</p>
+                <!-- TikTok Card -->
+                <div class="card border-t-4" style="border-top-color: #000000; background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);">
+                    <div class="flex items-center mb-4">
+                        <span class="p-2 rounded-md font-bold text-white text-xs mr-3 shadow flex items-center justify-center" style="background: linear-gradient(135deg, #00f2fe 0%, #000000 50%, #fe0979 100%); min-width: 32px">
+                           <span class="bg-transparent tracking-widest text-white">TK</span>
+                        </span>
+                        <h4 class="text-lg font-bold text-gray-900">TikTok</h4>
                     </div>
-                    <div>
-                        <p class="text-xs text-gray-500">Videos</p>
-                        <p class="font-semibold text-gray-800">${formatNum(tk.videos || 0)}</p>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Seguidores</p>
+                            <p class="text-2xl font-bold text-gray-900">${formatNum(tk.seguidores || 0)}</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+                            <div>
+                                <p class="text-xs text-gray-500">Total de Curtidas</p>
+                                <p class="font-semibold text-gray-800">${formatNum(tk.curtidas_totais || 0)}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500">Vídeos</p>
+                                <p class="font-semibold text-gray-800">${formatNum(tk.videos || 0)}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    `;
+        </div>`;
+    }).join('');
 }
 
 // Fetch all required data
@@ -356,7 +317,7 @@ function renderGovernoMS() {
         data: {
             labels: labels,
             datasets: [{
-                label: 'Search Interest',
+                label: 'Interesse de Busca',
                 data: values,
                 borderColor: colors[entity],
                 backgroundColor: colors[entity] + '20', // Hex + alpha
@@ -380,8 +341,7 @@ function renderGovernoMS() {
 
 // Rendering Candidates
 function renderCandidates() {
-    // 1. Candidate Selector & Details Cards
-    renderCandidateSelector();
+    // 1. Candidate Details Cards
     renderCandidateCards();
 
     // 2. Comparative Line Chart
@@ -437,7 +397,7 @@ function renderCandidates() {
         const rising = globalData.trends[cand].risingQueries.slice(0, 5);
 
         const renderRows = (arr, isRising = false) => {
-            if(!arr || arr.length === 0) return '<tr><td colspan="2" class="text-gray-400 text-xs py-2 italic text-center">No data</td></tr>';
+            if(!arr || arr.length === 0) return '<tr><td colspan="2" class="text-gray-400 text-xs py-2 italic text-center">Sem dados</td></tr>';
             return arr.map(t => `
                 <tr class="border-b border-gray-100 last:border-0">
                     <td class="py-2 text-xs truncate max-w-[120px] capitalize" title="${t.query || t.Query || ''}">${t.query || t.Query || ''}</td>
@@ -456,14 +416,14 @@ function renderCandidates() {
             </h4>
             
             <div class="mb-4">
-                <h5 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Top Queries</h5>
+                <h5 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Principais Consultas</h5>
                 <table class="w-full text-left table-fixed">
                     <tbody>${renderRows(top)}</tbody>
                 </table>
             </div>
             
             <div>
-                <h5 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Rising Queries</h5>
+                <h5 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Consultas em Ascensão</h5>
                 <table class="w-full text-left table-fixed">
                     <tbody>${renderRows(rising, true)}</tbody>
                 </table>
