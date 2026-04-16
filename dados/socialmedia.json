@@ -1,0 +1,119 @@
+{
+  "perfis": [
+    {
+      "nome": "Governo MS",
+      "redes_sociais": {
+        "instagram": {
+          "seguidores": 111271,
+          "seguindo": 432,
+          "media_count": 7316,
+          "taxa_engajamento_pct": 0.11,
+          "media_curtidas": 121.25,
+          "media_comentarios": 3.94
+        },
+        "facebook": {
+          "curtidas": 135749,
+          "pessoas_falando": 92
+        },
+        "tiktok": {
+          "seguidores": 3790,
+          "seguindo": 14,
+          "curtidas_totais": 26400,
+          "videos": 418
+        }
+      }
+    },
+    {
+      "nome": "Eduardo Riedel",
+      "redes_sociais": {
+        "instagram": {
+          "seguidores": 95189,
+          "seguindo": 4199,
+          "media_count": 3193,
+          "taxa_engajamento_pct": 1.14,
+          "media_curtidas": 975.25,
+          "media_comentarios": 112.69
+        },
+        "facebook": {
+          "curtidas": 43173,
+          "pessoas_falando": 14312
+        },
+        "tiktok": {
+          "seguidores": 17200,
+          "seguindo": 608,
+          "curtidas_totais": 142100,
+          "videos": 606
+        }
+      }
+    },
+    {
+      "nome": "Marcos Pollon",
+      "redes_sociais": {
+        "instagram": {
+          "seguidores": 369238,
+          "seguindo": 3910,
+          "media_count": 5328,
+          "taxa_engajamento_pct": 0.4,
+          "media_curtidas": 1386.69,
+          "media_comentarios": 100.19
+        },
+        "facebook": {
+          "curtidas": 143825,
+          "pessoas_falando": 13083
+        },
+        "tiktok": {
+          "seguidores": 8440,
+          "seguindo": 4,
+          "curtidas_totais": 114600,
+          "videos": 693
+        }
+      }
+    },
+    {
+      "nome": "João Henrique Catan",
+      "redes_sociais": {
+        "instagram": {
+          "seguidores": 981,
+          "seguindo": 2,
+          "media_count": 86,
+          "taxa_engajamento_pct": 2.36,
+          "media_curtidas": 21.94,
+          "media_comentarios": 1.25
+        },
+        "facebook": {
+          "curtidas": 31814,
+          "pessoas_falando": 2031
+        },
+        "tiktok": {
+          "seguidores": 3430,
+          "seguindo": 20,
+          "curtidas_totais": 23700,
+          "videos": 159
+        }
+      }
+    },
+    {
+      "nome": "Fabio Trad",
+      "redes_sociais": {
+        "instagram": {
+          "seguidores": 169343,
+          "seguindo": 7256,
+          "media_count": 3121,
+          "taxa_engajamento_pct": 1.45,
+          "media_curtidas": 2276.81,
+          "media_comentarios": 179.25
+        },
+        "facebook": {
+          "curtidas": 54839,
+          "pessoas_falando": 13428
+        },
+        "tiktok": {
+          "seguidores": 0,
+          "seguindo": 0,
+          "curtidas_totais": 0,
+          "videos": 0
+        }
+      }
+    }
+  ]
+}
