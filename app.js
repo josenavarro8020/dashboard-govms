@@ -136,98 +136,100 @@ function aggregateMonthly(data, timeKey, valKey) {
     });
 }
 
-function renderCandidateCards() {
-    const container = document.getElementById('candidate-cards-container');
-    if(!container) return;
+function generateSocialMediaCard(cand) {
+    const profile = globalData.socialMedia.find(p => p.nome === cand) || {redes_sociais: {instagram:{}, facebook:{}, tiktok:{}}};
+    const rs = profile.redes_sociais;
+    const insta = rs.instagram || {};
+    const fb = rs.facebook || {};
+    const tk = rs.tiktok || {};
 
-    container.innerHTML = candidateKeys.map(cand => {
-        const profile = globalData.socialMedia.find(p => p.nome === cand) || {redes_sociais: {instagram:{}, facebook:{}, tiktok:{}}};
-        const rs = profile.redes_sociais;
-        const insta = rs.instagram || {};
-        const fb = rs.facebook || {};
-        const tk = rs.tiktok || {};
-
-        return `
-        <div class="mb-8">
-            <h4 class="text-xl font-bold mb-4 flex items-center" style="color: ${colors[cand]}">
-                <span class="inline-block w-4 h-4 rounded-full mr-2" style="background-color: ${colors[cand]}"></span>
-                ${cand}
-            </h4>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Instagram Card -->
-                <div class="card border-t-4" style="border-top-color: #E1306C; background: linear-gradient(to bottom, #fff0f5 0%, #ffffff 100%);">
-                    <div class="flex items-center mb-4">
-                        <span class="p-2 rounded-md font-bold text-white text-xs mr-3 shadow" style="background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);">IG</span>
-                        <h4 class="text-lg font-bold text-gray-900">Instagram</h4>
-                    </div>
-                    <div class="space-y-4">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500">Seguidores</p>
-                            <p class="text-2xl font-bold text-gray-900">${formatNum(insta.seguidores || 0)}</p>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
-                            <div>
-                                <p class="text-xs text-gray-500">Engajamento</p>
-                                <p class="font-semibold text-gray-800">${insta.taxa_engajamento_pct || 0}%</p>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-500">Média de Curtidas</p>
-                                <p class="font-semibold text-gray-800">${formatNum(insta.media_curtidas || 0)}</p>
-                            </div>
-                            <div class="col-span-2">
-                                <p class="text-xs text-gray-500">Média de Comentários</p>
-                                <p class="font-semibold text-gray-800">${formatNum(insta.media_comentarios || 0)}</p>
-                            </div>
-                        </div>
-                    </div>
+    return `
+    <div class="mb-8">
+        <h4 class="text-xl font-bold mb-4 flex items-center" style="color: ${colors[cand]}">
+            <span class="inline-block w-4 h-4 rounded-full mr-2" style="background-color: ${colors[cand]}"></span>
+            ${cand}
+        </h4>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Instagram Card -->
+            <div class="card border-t-4" style="border-top-color: #E1306C; background: linear-gradient(to bottom, #fff0f5 0%, #ffffff 100%);">
+                <div class="flex items-center mb-4">
+                    <span class="p-2 rounded-md font-bold text-white text-xs mr-3 shadow" style="background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);">IG</span>
+                    <h4 class="text-lg font-bold text-gray-900">Instagram</h4>
                 </div>
-
-                <!-- Facebook Card -->
-                <div class="card border-t-4" style="border-top-color: #1877F2; background: linear-gradient(to bottom, #eff6ff 0%, #ffffff 100%);">
-                    <div class="flex items-center mb-4">
-                        <span class="p-2 rounded-md font-bold text-white text-xs mr-3 shadow" style="background:#1877F2;">FB</span>
-                        <h4 class="text-lg font-bold text-gray-900">Facebook</h4>
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Seguidores</p>
+                        <p class="text-2xl font-bold text-gray-900">${formatNum(insta.seguidores || 0)}</p>
                     </div>
-                    <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
                         <div>
-                            <p class="text-sm font-medium text-gray-500">Curtidas na Página</p>
-                            <p class="text-2xl font-bold text-gray-900">${formatNum(fb.curtidas || 0)}</p>
+                            <p class="text-xs text-gray-500">Engajamento</p>
+                            <p class="font-semibold text-gray-800">${insta.taxa_engajamento_pct || 0}%</p>
                         </div>
-                        <div class="pt-4 border-t border-gray-100">
-                            <p class="text-xs text-gray-500">Falando Sobre</p>
-                            <p class="font-semibold text-gray-800">${formatNum(fb.pessoas_falando || 0)}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TikTok Card -->
-                <div class="card border-t-4" style="border-top-color: #000000; background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);">
-                    <div class="flex items-center mb-4">
-                        <span class="p-2 rounded-md font-bold text-white text-xs mr-3 shadow flex items-center justify-center" style="background: linear-gradient(135deg, #00f2fe 0%, #000000 50%, #fe0979 100%); min-width: 32px">
-                           <span class="bg-transparent tracking-widest text-white">TK</span>
-                        </span>
-                        <h4 class="text-lg font-bold text-gray-900">TikTok</h4>
-                    </div>
-                    <div class="space-y-4">
                         <div>
-                            <p class="text-sm font-medium text-gray-500">Seguidores</p>
-                            <p class="text-2xl font-bold text-gray-900">${formatNum(tk.seguidores || 0)}</p>
+                            <p class="text-xs text-gray-500">Média de Curtidas</p>
+                            <p class="font-semibold text-gray-800">${formatNum(insta.media_curtidas || 0)}</p>
                         </div>
-                        <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
-                            <div>
-                                <p class="text-xs text-gray-500">Total de Curtidas</p>
-                                <p class="font-semibold text-gray-800">${formatNum(tk.curtidas_totais || 0)}</p>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-500">Vídeos</p>
-                                <p class="font-semibold text-gray-800">${formatNum(tk.videos || 0)}</p>
-                            </div>
+                        <div class="col-span-2">
+                            <p class="text-xs text-gray-500">Média de Comentários</p>
+                            <p class="font-semibold text-gray-800">${formatNum(insta.media_comentarios || 0)}</p>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>`;
-    }).join('');
+
+            <!-- Facebook Card -->
+            <div class="card border-t-4" style="border-top-color: #1877F2; background: linear-gradient(to bottom, #eff6ff 0%, #ffffff 100%);">
+                <div class="flex items-center mb-4">
+                    <span class="p-2 rounded-md font-bold text-white text-xs mr-3 shadow" style="background:#1877F2;">FB</span>
+                    <h4 class="text-lg font-bold text-gray-900">Facebook</h4>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Curtidas na Página</p>
+                        <p class="text-2xl font-bold text-gray-900">${formatNum(fb.curtidas || 0)}</p>
+                    </div>
+                    <div class="pt-4 border-t border-gray-100">
+                        <p class="text-xs text-gray-500">Falando Sobre</p>
+                        <p class="font-semibold text-gray-800">${formatNum(fb.pessoas_falando || 0)}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TikTok Card -->
+            <div class="card border-t-4" style="border-top-color: #000000; background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);">
+                <div class="flex items-center mb-4">
+                    <span class="p-2 rounded-md font-bold text-white text-xs mr-3 shadow flex items-center justify-center" style="background: linear-gradient(135deg, #00f2fe 0%, #000000 50%, #fe0979 100%); min-width: 32px">
+                       <span class="bg-transparent tracking-widest text-white">TK</span>
+                    </span>
+                    <h4 class="text-lg font-bold text-gray-900">TikTok</h4>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Seguidores</p>
+                        <p class="text-2xl font-bold text-gray-900">${formatNum(tk.seguidores || 0)}</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+                        <div>
+                            <p class="text-xs text-gray-500">Total de Curtidas</p>
+                            <p class="font-semibold text-gray-800">${formatNum(tk.curtidas_totais || 0)}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500">Vídeos</p>
+                            <p class="font-semibold text-gray-800">${formatNum(tk.videos || 0)}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>`;
+}
+
+function renderCandidateCards() {
+    const container = document.getElementById('candidate-cards-container');
+    if(!container) return;
+
+    container.innerHTML = candidateKeys.map(cand => generateSocialMediaCard(cand)).join('');
 }
 
 // Fetch all required data
@@ -276,12 +278,10 @@ async function loadAllData() {
 // Rendering Governing MS
 function renderGovernoMS() {
     const entity = 'Governo MS';
-    const profile = globalData.socialMedia.find(p => p.nome === entity);
     
-    if (profile) {
-        document.getElementById('govms-insta-followers').textContent = formatNum(profile.redes_sociais.instagram.seguidores);
-        document.getElementById('govms-fb-likes').textContent = formatNum(profile.redes_sociais.facebook.curtidas);
-        document.getElementById('govms-tiktok-followers').textContent = formatNum(profile.redes_sociais.tiktok.seguidores);
+    const container = document.getElementById('govms-social-card-container');
+    if (container) {
+        container.innerHTML = generateSocialMediaCard(entity);
     }
 
     const trends = globalData.trends[entity];
