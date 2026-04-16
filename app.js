@@ -136,19 +136,22 @@ function aggregateMonthly(data, timeKey, valKey) {
     });
 }
 
-function generateSocialMediaCard(cand) {
+function generateSocialMediaCard(cand, showHeader = true) {
     const profile = globalData.socialMedia.find(p => p.nome === cand) || {redes_sociais: {instagram:{}, facebook:{}, tiktok:{}}};
     const rs = profile.redes_sociais;
     const insta = rs.instagram || {};
     const fb = rs.facebook || {};
     const tk = rs.tiktok || {};
 
-    return `
-    <div class="mb-8">
+    const headerHtml = showHeader ? `
         <h4 class="text-xl font-bold mb-4 flex items-center" style="color: ${colors[cand]}">
             <span class="inline-block w-4 h-4 rounded-full mr-2" style="background-color: ${colors[cand]}"></span>
             ${cand}
-        </h4>
+        </h4>` : '';
+
+    return `
+    <div class="mb-8">
+        ${headerHtml}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Instagram Card -->
             <div class="card border-t-4" style="border-top-color: #E1306C; background: linear-gradient(to bottom, #fff0f5 0%, #ffffff 100%);">
@@ -281,7 +284,8 @@ function renderGovernoMS() {
     
     const container = document.getElementById('govms-social-card-container');
     if (container) {
-        container.innerHTML = generateSocialMediaCard(entity);
+        // showHeader=false since the card wrapper already has a title
+        container.innerHTML = generateSocialMediaCard(entity, false);
     }
 
     const trends = globalData.trends[entity];
