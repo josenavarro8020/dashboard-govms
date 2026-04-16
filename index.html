@@ -30,7 +30,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .hidden-section { display: none; }
+        .section-page { display: none; }
+        .section-page.active { display: block; }
         .card { 
             background: white; 
             border-radius: 0.75rem; 
@@ -45,18 +46,49 @@
             text-transform: uppercase;
             font-size: 0.75rem;
         }
+        .tab-btn {
+            padding: 0.5rem 1.25rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: #64748b;
+        }
+        .tab-btn:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+        .tab-btn.active {
+            background: #1e293b;
+            color: white;
+            box-shadow: 0 2px 8px rgba(30,41,59,0.3);
+        }
+        .tab-btn.active.candidates-tab {
+            background: #4F46E5;
+            box-shadow: 0 2px 8px rgba(79,70,229,0.35);
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
 
     <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b border-gray-200">
+    <nav class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex">
-                    <div class="flex-shrink-0 flex items-center text-xl font-bold text-gray-900">
-                        PolitiDash ⚡
-                    </div>
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center text-xl font-bold text-gray-900">
+                    PolitiDash ⚡
+                </div>
+                <!-- Tab Navigation -->
+                <div class="flex items-center gap-2 bg-gray-100 p-1.5 rounded-xl">
+                    <button id="tab-govms" class="tab-btn active" onclick="switchTab('govms')">
+                        🏛️ Governo MS
+                    </button>
+                    <button id="tab-candidates" class="tab-btn candidates-tab" onclick="switchTab('candidates')">
+                        🗳️ Candidatos 2026
+                    </button>
                 </div>
             </div>
         </div>
@@ -64,20 +96,21 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        <!-- SECTION: Governo de MS -->
-        <section id="sec-govms" class="space-y-6">
+        <!-- PAGE: Governo de MS -->
+        <div id="page-govms" class="section-page active space-y-6">
             <div>
                 <h1 class="text-2xl font-bold text-gray-900">Visão Geral - Governo de MS</h1>
                 <p class="text-sm text-gray-500">Desempenho institucional e volume de buscas</p>
             </div>
 
-            <!-- Social Media Detailed Card -->
+            <!-- Social Media Cards (injected via JS) -->
             <div class="card bg-white shadow rounded-lg p-6">
-                <div class="flex items-center justify-between mb-4 border-b pb-4">
-                    <h3 class="text-lg font-medium text-gray-900">Visão Geral de Redes Sociais</h3>
+                <div class="flex items-center justify-between mb-6 border-b pb-4">
+                    <h3 class="text-lg font-medium text-gray-900">Redes Sociais – Governo MS</h3>
                 </div>
-                <!-- Card injected via JS -->
-                <div id="govms-social-card-container"></div>
+                <div id="govms-social-card-container">
+                    <p class="text-gray-400 text-sm">Carregando dados...</p>
+                </div>
             </div>
 
             <!-- Chart -->
@@ -123,10 +156,10 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <!-- SECTION: Candidates 2026 -->
-        <section id="sec-candidates" class="space-y-6 pt-12">
+        <!-- PAGE: Candidates 2026 -->
+        <div id="page-candidates" class="section-page space-y-6">
             <div>
                 <h1 class="text-2xl font-bold text-gray-900">Comparativo de Candidatos 2026</h1>
                 <p class="text-sm text-gray-500">Análise de desempenho para os potenciais cenários de 2026</p>
@@ -160,10 +193,22 @@
                 </div>
             </div>
 
-        </section>
+        </div>
 
     </main>
 
+    <script>
+        function switchTab(tab) {
+            // Hide all pages
+            document.querySelectorAll('.section-page').forEach(el => el.classList.remove('active'));
+            // Remove active from all tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            // Show selected page
+            document.getElementById('page-' + tab).classList.add('active');
+            document.getElementById('tab-' + tab).classList.add('active');
+        }
+    </script>
     <script src="app.js"></script>
 </body>
 </html>
