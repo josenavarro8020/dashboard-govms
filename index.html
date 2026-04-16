@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Political Intelligence Dashboard</title>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        riedel: '#4F46E5',
+                        pollon: '#8B5CF6',
+                        trad: '#10B981',
+                        catan: '#F59E0B',
+                        govms: '#1E293B',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .hidden-section { display: none; }
+        .card { 
+            background: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); 
+            padding: 1.5rem;
+            border: 1px solid #e5e7eb;
+        }
+        .table-header {
+            background-color: #f3f4f6;
+            color: #374151;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center text-xl font-bold text-gray-900">
+                        PolitiDash ⚡
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <button id="nav-govms" class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" onclick="switchView('govms')">
+                            Governo de MS
+                        </button>
+                        <button id="nav-candidates" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" onclick="switchView('candidates')">
+                            Candidates 2026
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- SECTION: Governo de MS -->
+        <section id="sec-govms" class="space-y-6">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Governo de MS Overview</h1>
+                <p class="text-sm text-gray-500">Institutional performance and search volume</p>
+            </div>
+
+            <!-- KPIs -->
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-3">
+                <div class="card">
+                    <h3 class="text-sm font-medium text-gray-500">Instagram Followers</h3>
+                    <p class="mt-1 text-3xl font-bold text-gray-900" id="govms-insta-followers">-</p>
+                </div>
+                <div class="card">
+                    <h3 class="text-sm font-medium text-gray-500">Facebook Likes</h3>
+                    <p class="mt-1 text-3xl font-bold text-gray-900" id="govms-fb-likes">-</p>
+                </div>
+                <div class="card">
+                    <h3 class="text-sm font-medium text-gray-500">TikTok Followers</h3>
+                    <p class="mt-1 text-3xl font-bold text-gray-900" id="govms-tiktok-followers">-</p>
+                </div>
+            </div>
+
+            <!-- Chart -->
+            <div class="card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Google Search Interest (Time Series)</h3>
+                <div class="relative h-72 w-full">
+                    <canvas id="chart-govms-timeline"></canvas>
+                </div>
+            </div>
+
+            <!-- Search Terms Tables -->
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div class="card">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Top Queries</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="table-header">
+                                <tr>
+                                    <th class="px-4 py-2 text-left">Query</th>
+                                    <th class="px-4 py-2 text-right">Interest</th>
+                                </tr>
+                            </thead>
+                            <tbody id="govms-top-queries" class="bg-white divide-y divide-gray-200 text-sm">
+                                <!-- Data injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Rising Queries</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="table-header">
+                                <tr>
+                                    <th class="px-4 py-2 text-left">Query</th>
+                                    <th class="px-4 py-2 text-right">Increase</th>
+                                </tr>
+                            </thead>
+                            <tbody id="govms-rising-queries" class="bg-white divide-y divide-gray-200 text-sm">
+                                <!-- Data injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: Candidates 2026 -->
+        <section id="sec-candidates" class="hidden-section space-y-6">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Candidates 2026 Comparison</h1>
+                <p class="text-sm text-gray-500">Benchmarking performance across possible 2026 scenarios</p>
+            </div>
+
+            <!-- Instagram Table -->
+            <div class="card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Instagram Performance</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
+                        <thead class="table-header">
+                            <tr>
+                                <th class="px-6 py-3 text-left tracking-wider">Candidate</th>
+                                <th class="px-6 py-3 text-right tracking-wider">Followers</th>
+                                <th class="px-6 py-3 text-right tracking-wider">Engagement (%)</th>
+                                <th class="px-6 py-3 text-right tracking-wider">Avg. Likes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="candidates-insta-table" class="bg-white divide-y divide-gray-200 text-sm text-gray-900">
+                            <!-- Data injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Comparison Chart -->
+            <div class="card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Google Search Interest Comparison</h3>
+                <div class="relative h-96 w-full">
+                    <canvas id="chart-candidates-timeline"></canvas>
+                </div>
+            </div>
+
+            <!-- Search Terms Grid (4 Columns) -->
+            <div class="card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Google Search Queries by Candidate (Top & Rising)</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="candidates-search-grid">
+                    <!-- Cards injected via JS -->
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
