@@ -118,6 +118,156 @@ function parseCSV(csvText) {
     }
     return data;
 }
+// Utility: Group time series by month and average
+function aggregateMonthly(data, timeKey, valKey) {
+    if(!data || data.length === 0) return [];
+
+    const monthMap = {};
+    const monthLabels = [];
+
+    data.forEach(row => {
+        const dateStr = row[timeKey]; 
+        const valStr = row[valKey];
+        if(!dateStr) return;
+
+        const dateObj = new Date(dateStr);
+        if (isNaN(dateObj.getTime())) return;
+        
+        const year = dateObj.getFullYear();
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const monthName = monthNames[dateObj.getMonth()];
+        const monthKey = `${monthName} ${year}`;
+        const numericKey = `${year}-${String(dateObj.getMonth() + 1).padStart(2, '0')}`; // For sorting
+
+        if (!monthMap[numericKey]) {
+            monthMap[numericKey] = { label: monthKey, sum: 0, count: 0 };
+            monthLabels.push(numericKey);
+        }
+
+        const val = Number(valStr);
+        if(!isNaN(val)) {
+            monthMap[numericKey].sum += val;
+            monthMap[numericKey].count += 1;
+        }
+    });
+
+    return Object.keys(monthMap).sort().map(nk => {
+        const item = monthMap[nk];
+        const avg = item.count > 0 ? (item.sum / item.count).toFixed(2) : 0;
+        return { [timeKey]: item.label, [valKey]: avg };
+    });
+}
+
+let selectedCandidate = candidateKeys[0]; // default
+
+window.selectCandidate = function(cand) {
+    selectedCandidate = cand;
+    renderCandidateSelector();
+    renderCandidateCards();
+};
+
+function renderCandidateSelector() {
+    const selectorEl = document.getElementById('candidate-selector');
+    if(!selectorEl) return;
+    selectorEl.innerHTML = candidateKeys.map(cand => {
+        const isActive = cand === selectedCandidate;
+        const color = colors[cand];
+        const activeStyles = isActive 
+            ? `background-color: ${color}; color: white; border-color: ${color};` 
+            : `background-color: #f9fafb; color: #4b5563; border-color: #e5e7eb;`;
+
+        return `
+            <button onclick="selectCandidate('${cand}')" class="px-4 py-2 text-sm font-medium border rounded-full transition-colors duration-200 hover:opacity-80 focus:outline-none" style="${activeStyles}">
+                ${cand}
+            </button>
+        `;
+    }).join('');
+}
+
+function renderCandidateCards() {
+    const profile = globalData.socialMedia.find(p => p.nome === selectedCandidate) || {redes_sociais: {instagram:{}, facebook:{}, tiktok:{}}};
+    const rs = profile.redes_sociais;
+    const container = document.getElementById('candidate-cards-container');
+    if(!container) return;
+
+    const insta = rs.instagram || {};
+    const fb = rs.facebook || {};
+    const tk = rs.tiktok || {};
+
+    container.innerHTML = `
+        <!-- Instagram Card -->
+        <div class="card border-t-4" style="border-top-color: #E1306C; background: linear-gradient(to bottom, #fff0f5 0%, #ffffff 100%);">
+            <div class="flex items-center mb-4">
+                <span class="p-2 rounded-md font-bold text-white text-xs mr-3 shadow" style="background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);">IG</span>
+                <h4 class="text-lg font-bold text-gray-900">Instagram</h4>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Followers</p>
+                    <p class="text-2xl font-bold text-gray-900">${formatNum(insta.seguidores || 0)}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+                    <div>
+                        <p class="text-xs text-gray-500">Engagement</p>
+                        <p class="font-semibold text-gray-800">${insta.taxa_engajamento_pct || 0}%</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500">Avg Likes</p>
+                        <p class="font-semibold text-gray-800">${formatNum(insta.media_curtidas || 0)}</p>
+                    </div>
+                    <div class="col-span-2">
+                        <p class="text-xs text-gray-500">Avg Comments</p>
+                        <p class="font-semibold text-gray-800">${formatNum(insta.media_comentarios || 0)}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Facebook Card -->
+        <div class="card border-t-4" style="border-top-color: #1877F2; background: linear-gradient(to bottom, #eff6ff 0%, #ffffff 100%);">
+            <div class="flex items-center mb-4">
+                <span class="p-2 rounded-md font-bold text-white text-xs mr-3 shadow" style="background:#1877F2;">FB</span>
+                <h4 class="text-lg font-bold text-gray-900">Facebook</h4>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Page Likes</p>
+                    <p class="text-2xl font-bold text-gray-900">${formatNum(fb.curtidas || 0)}</p>
+                </div>
+                <div class="pt-4 border-t border-gray-100">
+                    <p class="text-xs text-gray-500">Talking About</p>
+                    <p class="font-semibold text-gray-800">${formatNum(fb.pessoas_falando || 0)}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TikTok Card -->
+        <div class="card border-t-4" style="border-top-color: #000000; background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);">
+            <div class="flex items-center mb-4">
+                <span class="p-2 rounded-md font-bold text-white text-xs mr-3 shadow flex items-center justify-center" style="background: linear-gradient(135deg, #00f2fe 0%, #000000 50%, #fe0979 100%); min-width: 32px">
+                   <span class="bg-transparent tracking-widest text-white">TK</span>
+                </span>
+                <h4 class="text-lg font-bold text-gray-900">TikTok</h4>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Followers</p>
+                    <p class="text-2xl font-bold text-gray-900">${formatNum(tk.seguidores || 0)}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+                    <div>
+                        <p class="text-xs text-gray-500">Total Likes</p>
+                        <p class="font-semibold text-gray-800">${formatNum(tk.curtidas_totais || 0)}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500">Videos</p>
+                        <p class="font-semibold text-gray-800">${formatNum(tk.videos || 0)}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
 
 // Fetch all required data
 async function loadAllData() {
@@ -191,9 +341,11 @@ function renderGovernoMS() {
 
     // Time Series Line Chart
     const ctx = document.getElementById('chart-govms-timeline').getContext('2d');
-    const tsData = trends.timeSeries;
+    let tsData = trends.timeSeries;
     const timeKey = Object.keys(tsData[0] || {}).find(k => k.toLowerCase() === 'time');
     const valKey = Object.keys(tsData[0] || {}).find(k => k.toLowerCase() !== 'time');
+
+    tsData = aggregateMonthly(tsData, timeKey, valKey);
 
     const labels = tsData.map(d => d[timeKey]);
     const values = tsData.map(d => Number(d[valKey]));
@@ -228,38 +380,22 @@ function renderGovernoMS() {
 
 // Rendering Candidates
 function renderCandidates() {
-    // 1. Instagram Table
-    const tbodyInsta = document.getElementById('candidates-insta-table');
-    const candidatesProfiles = globalData.socialMedia.filter(p => candidateKeys.includes(p.nome));
-    
-    tbodyInsta.innerHTML = candidatesProfiles.map(p => {
-        const isRiedel = p.nome === 'Eduardo Riedel';
-        const bgClass = isRiedel ? 'bg-indigo-50/50' : '';
-        const nameClass = isRiedel ? 'font-bold text-indigo-700' : 'font-medium text-gray-900';
-        return `
-        <tr class="${bgClass}">
-            <td class="px-6 py-4 whitespace-nowrap ${nameClass}">
-                <div class="flex items-center">
-                    <span class="inline-block w-3 h-3 rounded-full mr-2" style="background-color: ${colors[p.nome]}"></span>
-                    ${p.nome}
-                </div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-right font-medium">${formatNum(p.redes_sociais.instagram.seguidores)}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-right">${p.redes_sociais.instagram.taxa_engajamento_pct}%</td>
-            <td class="px-6 py-4 whitespace-nowrap text-right">${formatNum(p.redes_sociais.instagram.media_curtidas)}</td>
-        </tr>`;
-    }).join('');
+    // 1. Candidate Selector & Details Cards
+    renderCandidateSelector();
+    renderCandidateCards();
 
     // 2. Comparative Line Chart
     const datasets = [];
     let labels = [];
 
     candidateKeys.forEach(cand => {
-        const tsData = globalData.trends[cand].timeSeries;
+        let tsData = globalData.trends[cand].timeSeries;
         if(tsData.length > 0) {
             const timeKey = Object.keys(tsData[0] || {}).find(k => k.toLowerCase() === 'time');
             const valKey = Object.keys(tsData[0] || {}).find(k => k.toLowerCase() !== 'time');
             
+            tsData = aggregateMonthly(tsData, timeKey, valKey);
+
             if (labels.length === 0) labels = tsData.map(d => d[timeKey]);
             datasets.push({
                 label: cand,
