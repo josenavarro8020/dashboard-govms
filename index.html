@@ -50,7 +50,7 @@
 <body class="bg-gray-50 text-gray-800">
 
     <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+    <nav class="bg-white shadow-sm border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex">
@@ -62,33 +62,111 @@
         </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        <div>
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Monitoramento de Redes e Performance</h1>
-            <p class="text-base text-gray-500">Visão integrada das redes sociais e volume mensal no Google Trends.</p>
-        </div>
+        <!-- SECTION: Governo de MS -->
+        <section id="sec-govms" class="space-y-6">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Visão Geral - Governo de MS</h1>
+                <p class="text-sm text-gray-500">Desempenho institucional e volume de buscas</p>
+            </div>
 
-        <section id="sec-social">
-            <h2 class="text-2xl font-bold text-gray-900 border-b border-gray-200 pb-3 mb-6">Desempenho em Redes Sociais</h2>
-            <!-- Candidate Cards Injected Here -->
-            <div id="candidate-cards-container" class="space-y-10"></div>
-        </section>
+            <!-- KPIs -->
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-3">
+                <div class="card">
+                    <h3 class="text-sm font-medium text-gray-500">Seguidores no Instagram</h3>
+                    <p class="mt-1 text-3xl font-bold text-gray-900" id="govms-insta-followers">-</p>
+                </div>
+                <div class="card">
+                    <h3 class="text-sm font-medium text-gray-500">Curtidas no Facebook</h3>
+                    <p class="mt-1 text-3xl font-bold text-gray-900" id="govms-fb-likes">-</p>
+                </div>
+                <div class="card">
+                    <h3 class="text-sm font-medium text-gray-500">Seguidores no TikTok</h3>
+                    <p class="mt-1 text-3xl font-bold text-gray-900" id="govms-tiktok-followers">-</p>
+                </div>
+            </div>
 
-        <section id="sec-trends">
-            <h2 class="text-2xl font-bold text-gray-900 border-b border-gray-200 pb-3 mb-6">Tendências do Google (Volume Mensal)</h2>
+            <!-- Chart -->
             <div class="card">
-                <div class="relative h-[28rem] w-full">
-                    <canvas id="chart-candidates-timeline"></canvas>
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Interesse de Busca no Google (Série Temporal)</h3>
+                <div class="relative h-72 w-full">
+                    <canvas id="chart-govms-timeline"></canvas>
+                </div>
+            </div>
+
+            <!-- Search Terms Tables -->
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div class="card">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Principais Consultas</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="table-header">
+                                <tr>
+                                    <th class="px-4 py-2 text-left">Consulta</th>
+                                    <th class="px-4 py-2 text-right">Interesse</th>
+                                </tr>
+                            </thead>
+                            <tbody id="govms-top-queries" class="bg-white divide-y divide-gray-200 text-sm">
+                                <!-- Data injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Consultas em Ascensão</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="table-header">
+                                <tr>
+                                    <th class="px-4 py-2 text-left">Consulta</th>
+                                    <th class="px-4 py-2 text-right">Aumento</th>
+                                </tr>
+                            </thead>
+                            <tbody id="govms-rising-queries" class="bg-white divide-y divide-gray-200 text-sm">
+                                <!-- Data injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section id="sec-queries">
-            <h2 class="text-2xl font-bold text-gray-900 border-b border-gray-200 pb-3 mb-6">Termos de Busca: Principais e em Ascensão</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6" id="candidates-search-grid">
-                <!-- Search Terms Grid Injected Here -->
+        <!-- SECTION: Candidates 2026 -->
+        <section id="sec-candidates" class="space-y-6 pt-12">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Comparativo de Candidatos 2026</h1>
+                <p class="text-sm text-gray-500">Análise de desempenho para os potenciais cenários de 2026</p>
             </div>
+
+            <!-- Candidate Specific Network Cards -->
+            <div class="card bg-white shadow rounded-lg p-6">
+                <div class="flex items-center justify-between mb-4 border-b pb-4">
+                    <h3 class="text-lg font-medium text-gray-900">Visão Geral de Redes Sociais por Candidato</h3>
+                </div>
+                
+                <!-- List of Candidates injected via JS -->
+                <div class="space-y-10" id="candidate-cards-container">
+                    <!-- Cards injected via JS -->
+                </div>
+            </div>
+
+            <!-- Comparison Chart -->
+            <div class="card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Comparativo de Interesse de Busca no Google</h3>
+                <div class="relative h-96 w-full">
+                    <canvas id="chart-candidates-timeline"></canvas>
+                </div>
+            </div>
+
+            <!-- Search Terms Grid (4 Columns) -->
+            <div class="card">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Consultas de Busca por Candidato (Principais e em Ascensão)</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="candidates-search-grid">
+                    <!-- Cards injected via JS -->
+                </div>
+            </div>
+
         </section>
 
     </main>
