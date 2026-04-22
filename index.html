@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,16 +30,26 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .section-page { display: none; }
-        .section-page.active { display: block; }
-        .card { 
-            background: white; 
-            border-radius: 0.75rem; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); 
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .section-page {
+            display: none;
+        }
+
+        .section-page.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             padding: 1.5rem;
             border: 1px solid #e5e7eb;
         }
+
         .table-header {
             background-color: #f3f4f6;
             color: #374151;
@@ -46,6 +57,7 @@
             text-transform: uppercase;
             font-size: 0.75rem;
         }
+
         .tab-btn {
             padding: 0.5rem 1.25rem;
             font-weight: 600;
@@ -57,21 +69,25 @@
             background: transparent;
             color: #64748b;
         }
+
         .tab-btn:hover {
             background: #f1f5f9;
             color: #1e293b;
         }
+
         .tab-btn.active {
             background: #1e293b;
             color: white;
-            box-shadow: 0 2px 8px rgba(30,41,59,0.3);
+            box-shadow: 0 2px 8px rgba(30, 41, 59, 0.3);
         }
+
         .tab-btn.active.candidates-tab {
             background: #4F46E5;
-            box-shadow: 0 2px 8px rgba(79,70,229,0.35);
+            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
         }
     </style>
 </head>
+
 <body class="bg-gray-50 text-gray-800">
 
     <!-- Navigation -->
@@ -95,7 +111,7 @@
     </nav>
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
+
         <!-- PAGE: Governo de MS -->
         <div id="page-govms" class="section-page active space-y-6">
             <div>
@@ -170,7 +186,7 @@
                 <div class="flex items-center justify-between mb-4 border-b pb-4">
                     <h3 class="text-lg font-medium text-gray-900">Visão Geral de Redes Sociais por Candidato</h3>
                 </div>
-                
+
                 <!-- List of Candidates injected via JS -->
                 <div class="space-y-10" id="candidate-cards-container">
                     <!-- Cards injected via JS -->
@@ -187,7 +203,8 @@
 
             <!-- Search Terms Grid (4 Columns) -->
             <div class="card">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Consultas de Busca por Candidato (Principais e em Ascensão)</h3>
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Consultas de Busca por Candidato (Principais e em
+                    Ascensão)</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="candidates-search-grid">
                     <!-- Cards injected via JS -->
                 </div>
@@ -211,4 +228,5 @@
     </script>
     <script src="app.js"></script>
 </body>
+
 </html>
