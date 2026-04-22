@@ -1,13 +1,12 @@
 // Configuration
 const colors = {
     'Eduardo Riedel': '#4F46E5', // Indigo
-    'Marcos Pollon': '#8B5CF6', // Purple
     'Fabio Trad': '#10B981', // Green
     'João Henrique Catan': '#F59E0B', // Orange
     'Governo MS': '#1E293B', // Slate
 };
 
-const candidateKeys = ['Eduardo Riedel', 'Marcos Pollon', 'Fabio Trad', 'João Henrique Catan'];
+const candidateKeys = ['Eduardo Riedel', 'Fabio Trad', 'João Henrique Catan'];
 
 const filePaths = {
     'Governo MS': {
@@ -20,11 +19,7 @@ const filePaths = {
         topQueries: './dados/google-trends/eduardoriedel/searched_with_top-queries_BR_20260116-0839_20260416-0839.csv',
         risingQueries: './dados/google-trends/eduardoriedel/searched_with_rising-queries_BR_20260116-0839_20260416-0839.csv'
     },
-    'Marcos Pollon': {
-        timeSeries: './dados/google-trends/marcospollon/time_series_BR_20260116-0839_20260416-0839.csv',
-        topQueries: './dados/google-trends/marcospollon/searched_with_top-queries_BR_20260116-0839_20260416-0839.csv',
-        risingQueries: './dados/google-trends/marcospollon/searched_with_rising-queries_BR_20260116-0839_20260416-0839.csv'
-    },
+
     'Fabio Trad': {
         timeSeries: './dados/google-trends/fabiotrad/time_series_BR_20260116-0840_20260416-0840.csv',
         topQueries: './dados/google-trends/fabiotrad/searched_with_top-queries_BR_20260116-0840_20260416-0840.csv',
